@@ -6,8 +6,8 @@ const authorizeRole = require('../middlewares/authorizeRole');
 
 router.post(
 	'/register',
-	authenticateToken,
-	authorizeRole([3]),
+	// authenticateToken,
+	// authorizeRole([3]),
 	userController.register
 );
 router.post('/login', userController.login);

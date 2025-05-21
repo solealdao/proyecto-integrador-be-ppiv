@@ -69,4 +69,23 @@ CREATE TABLE surveys (
   FOREIGN KEY (id_appointment) REFERENCES appointments(id_appointment)
 );
 
+-- Crear tabla de días de trabajo de los médicos
+CREATE TABLE doctor_schedules (
+  id_schedule INT AUTO_INCREMENT PRIMARY KEY,
+  id_doctor INT NOT NULL,
+  weekday ENUM('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday') NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  FOREIGN KEY (id_doctor) REFERENCES users(id_user)
+);
+
+-- Crear tabla de excepciones de día de trabajo de los médicos
+CREATE TABLE doctor_exceptions (
+  id_exception INT AUTO_INCREMENT PRIMARY KEY,
+  id_doctor INT NOT NULL,
+  exception_date DATE NOT NULL,
+  reason VARCHAR(255),
+  is_available BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY (id_doctor) REFERENCES users(id_user)
+);
 

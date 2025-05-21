@@ -6,6 +6,8 @@ require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var userRoutes = require('./routes/userRoutes');
+var appointmentRoutes = require('./routes/appointmentsRoutes');
+var availabilityRoutes = require('./routes/availabilityRoutes');
 
 var app = express();
 
@@ -17,5 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api/users', userRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/availability', availabilityRoutes);
 
 module.exports = app;
