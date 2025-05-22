@@ -1,4 +1,4 @@
-# 🏥 Sistema de Gestión de Turnos para Clínicas y Consultorios
+# 🏥 Backend -Sistema de Gestión de Turnos para Clínicas y Consultorios
 
 Este proyecto es parte del trabajo integrador final de la materia **Prácticas Profesionalizantes IV**. Se trata de una **API RESTful** desarrollada con **Node.js** y **Express**, que permite gestionar usuarios, turnos médicos, mensajes, notificaciones, encuestas de satisfacción y más.
 

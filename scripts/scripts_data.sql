@@ -6,11 +6,12 @@ INSERT INTO user_types (name) VALUES
 
 -- 2. Usuarios
 INSERT INTO users (first_name, last_name, email, password, id_user_type) VALUES
-('Juan', 'Pérez', 'juan.perez@example.com', 'pass123', 1), -- Paciente
-('Ana', 'Gómez', 'ana.gomez@example.com', 'pass123', 2),   -- Doctor
-('Luis', 'Martínez', 'luis.martinez@example.com', 'pass123', 3), -- Admin
-('María', 'López', 'maria.lopez@example.com', 'pass123', 1), -- Paciente
-('Carlos', 'Sánchez', 'carlos.sanchez@example.com', 'pass123', 2); -- Doctor
+('Juan', 'Pérez', 'juan.perez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 1), -- Paciente
+('Ana', 'Gómez', 'ana.gomez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 2),  -- Doctor
+('Luis', 'Martínez', 'luis.martinez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 3), -- Admin
+('María', 'López', 'maria.lopez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 1),  -- Paciente
+('Carlos', 'Sánchez', 'carlos.sanchez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 2); -- Doctor
+
 
 -- 3. Turnos (Appointments)
 INSERT INTO appointments (date, time, status, id_patient, id_doctor) VALUES
