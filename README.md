@@ -42,6 +42,8 @@ Este proyecto es parte del trabajo integrador final de la materia **Prácticas P
 ├── controllers/ # Lógica de negocio (register, login, ABM de usuarios, etc.)
 ├── routes/ # Rutas organizadas por entidad
 ├── models/ # Definición de modelos Sequelize
+├── middlewares/ # Middlewares como autenticación, validaciones, manejo de errores
+├── scripts/ # Scripts SQL para crear la base de datos y datos de prueba
 ├── .env # Variables de entorno
 ├── database.js # Configuración de conexión a la base de datos
 ├── index.js # Punto de entrada de la aplicación
@@ -66,28 +68,64 @@ npm install
 ```
 
 3. **Crear archivo .env**
-   DB_NAME=clinic_system
-   DB_USER=tu_usuario
-   DB_PASSWORD=tu_contraseña
-   DB_HOST=localhost
-   DB_DIALECT=mysql
-   SECRET_KEY=tu_clave_secreta_segura
+   Crear un archivo .env en la raíz del proyecto con el siguiente contenido:
 
-4. **Correr el servidor**
+   DB_USER=root
+   DB_PASS=password
+   DB_NAME=clinic_system
+   DB_HOST=127.0.0.1
+   SECRET_KEY=superclaveultrasecreta
+
+4. **Configuración de la conexión a la base de datos**
+   Los datos de conexión a la base de datos están definidos en el archivo:
 
 ```bash
-npm start
+/config/config.js
 ```
 
-5. **Testear conexión a la DB**
+Este archivo usa las variables del archivo `.env` para establecer la configuración del entorno development, incluyendo:
+
+-  nombre de la base de datos (DB_NAME)
+-  usuario (DB_USER)
+-  contraseña (DB_PASSWORD)
+-  host (DB_HOST)
+-  dialecto
+
+5. **Levantar la base de datos MySQL local**
+   Se requerirá tener MySQL instalado y en funcionamiento.
+   Se debe ejecutar los scripts SQL incluidos en la carpeta `/scripts` desde tu herramienta de gestión de bases de datos preferida (por ejemplo: MySQL Workbench, DBeaver, phpMyAdmin, etc.).
+
+Los archivos .sql incluyen:
+
+-  La creación de la base de datos y la creación de las tablas necesarias (`/scripts/scripts_structure.sql`)
+-  Inserción de datos de prueba (`/scripts/scripts_data.sql`)
+
+6. **Credenciales de prueba**
+   Para facilitar el testeo del login, se incluyen usuarios de ejemplo en el script `scripts/scripts_data.sql`.
+
+El `email` es el que figura en el script.
+La `contraseña` para todos los usuarios de prueba es: `123456`
+(las contraseñas están hasheadas en la base de datos, pero el valor en texto plano es este).
+
+6. **Testear conexión a la DB**
 
 ```bash
 node testDb.js
 ```
 
+7. **Correr el servidor**
+
+```bash
+npm start
+```
+
+El servidor estará disponible en http://localhost:4001
+
 ---
 
 ## Endpoints disponibles
+
+👤 Usuarios
 
 | Método | Ruta                  | Descripción                |
 | ------ | --------------------- | -------------------------- |
@@ -96,3 +134,27 @@ node testDb.js
 | GET    | `/api/users`          | Obtener todos los usuarios |
 | PUT    | `/api/users/:id`      | Editar usuario por ID      |
 | DELETE | `/api/users/:id`      | Eliminar usuario por ID    |
+
+📅 Turnos
+
+| Método | Ruta                             | Descripción                                 |
+| ------ | -------------------------------- | ------------------------------------------- |
+| POST   | `/api/appointments`              | Crear un nuevo turno                        |
+| PUT    | `/api/appointments/:id`          | Modificar un turno existente                |
+| DELETE | `/api/appointments/:id`          | Cancelar un turno                           |
+| GET    | `/api/appointments/me`           | Obtener los turnos del usuario logueado     |
+| GET    | `/api/appointments/user/:userId` | Obtener los turnos de un usuario específico |
+| POST   | `/api/appointments/:id/complete` | Completar un turno con notas                |
+
+📆 Disponibilidades
+
+| Método | Ruta                                          | Descripción                                             |
+| ------ | --------------------------------------------- | ------------------------------------------------------- |
+| GET    | `/api/availabilities`                         | Listar todas las disponibilidades                       |
+| GET    | `/api/availabilities/doctor/:idDoctor`        | Listar disponibilidades por doctor                      |
+| GET    | `/api/availabilities/doctor/:idDoctor/agenda` | Listar agenda completa (disponibilidades + excepciones) |
+| POST   | `/api/availabilities`                         | Crear nueva disponibilidad                              |
+| PUT    | `/api/availabilities/:id`                     | Modificar disponibilidad existente                      |
+| DELETE | `/api/availabilities/:id`                     | Eliminar una disponibilidad                             |
+| POST   | `/api/availabilities/unavailable`             | Crear una indisponibilidad (día no disponible)          |
+| DELETE | `/api/availabilities/unavailable/:id`         | Eliminar una indisponibilidad                           |
