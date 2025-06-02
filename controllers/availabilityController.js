@@ -63,16 +63,62 @@ const getDoctorAgenda = async (req, res) => {
 const createAvailability = async (req, res) => {
 	try {
 		const doctor_id = req.user.id;
-		const { day_of_week, start_time, end_time } = req.body;
+		const { days_of_week, start_time, end_time } = req.body;
 
-		const availability = await DoctorAvailability.create({
-			id_doctor: doctor_id,
-			weekday: day_of_week.toLowerCase(),
-			start_time,
-			end_time,
-		});
+		if (!Array.isArray(days_of_week) || days_of_week.length === 0) {
+			return res
+				.status(400)
+				.json({
+					message: 'days_of_week debe ser un array con al menos un día',
+				});
+		}
 
-		res.status(201).json(availability);
+		const created = [];
+		const conflicts = [];
+
+		for (const day of days_of_week) {
+			const lowercaseDay = day.toLowerCase();
+
+			const overlaps = await DoctorAvailability.findOne({
+				where: {
+					id_doctor: doctor_id,
+					weekday: lowercaseDay,
+					[Op.and]: [
+						{ start_time: { [Op.lt]: end_time } },
+						{ end_time: { [Op.gt]: start_time } },
+					],
+				},
+			});
+
+			if (overlaps) {
+				conflicts.push({
+					day: lowercaseDay,
+					message:
+						'Ya existe una disponibilidad en ese horario que se solapa',
+				});
+				continue;
+			}
+
+			const availability = await DoctorAvailability.create({
+				id_doctor: doctor_id,
+				weekday: lowercaseDay,
+				start_time,
+				end_time,
+			});
+
+			created.push(availability);
+		}
+
+		if (conflicts.length > 0) {
+			return res.status(207).json({
+				message:
+					'Algunas disponibilidades no se pudieron crear por conflictos',
+				created,
+				conflicts,
+			});
+		}
+
+		res.status(201).json({ message: 'Disponibilidades creadas', created });
 	} catch (error) {
 		res.status(500).json({ message: 'Error al crear disponibilidad', error });
 	}
@@ -94,8 +140,31 @@ const updateAvailability = async (req, res) => {
 			return res.status(403).json({ message: 'No autorizado' });
 		}
 
-		if (start_time) availability.start_time = start_time;
-		if (end_time) availability.end_time = end_time;
+		const newStart = start_time || availability.start_time;
+		const newEnd = end_time || availability.end_time;
+
+		// Chequear solapamiento, excluyendo el actual
+		const overlaps = await DoctorAvailability.findOne({
+			where: {
+				id_doctor: req.user.id,
+				weekday: availability.weekday,
+				id_schedule: { [Op.ne]: availability.id_schedule },
+				[Op.and]: [
+					{ start_time: { [Op.lt]: newEnd } },
+					{ end_time: { [Op.gt]: newStart } },
+				],
+			},
+		});
+
+		if (overlaps) {
+			return res.status(400).json({
+				message:
+					'Ya existe una disponibilidad en ese horario que se solapa',
+			});
+		}
+
+		availability.start_time = newStart;
+		availability.end_time = newEnd;
 		await availability.save();
 
 		res.status(200).json(availability);

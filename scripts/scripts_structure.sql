@@ -15,6 +15,7 @@ CREATE TABLE users (
   email CHAR(100) NOT NULL UNIQUE,
   password CHAR(100) NOT NULL,
   id_user_type INT NOT NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
   FOREIGN KEY (id_user_type) REFERENCES user_types(id_user_type)
 );
 

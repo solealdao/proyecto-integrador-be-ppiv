@@ -5,13 +5,12 @@ INSERT INTO user_types (name) VALUES
 ('Administrador');
 
 -- 2. Usuarios
-INSERT INTO users (first_name, last_name, email, password, id_user_type) VALUES
-('Juan', 'Pérez', 'juan.perez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 1), -- Paciente
-('Ana', 'Gómez', 'ana.gomez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 2),  -- Doctor
-('Luis', 'Martínez', 'luis.martinez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 3), -- Admin
-('María', 'López', 'maria.lopez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 1),  -- Paciente
-('Carlos', 'Sánchez', 'carlos.sanchez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 2); -- Doctor
-
+INSERT INTO users (first_name, last_name, email, password, id_user_type, is_active) VALUES
+('Juan', 'Pérez', 'juan.perez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 1, TRUE),  -- Paciente
+('Ana', 'Gómez', 'ana.gomez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 2, TRUE),   -- Doctor
+('Luis', 'Martínez', 'luis.martinez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 3, TRUE), -- Admin
+('María', 'López', 'maria.lopez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 1, TRUE), -- Paciente
+('Carlos', 'Sánchez', 'carlos.sanchez@example.com', '$2b$10$qAZ/fgFDX/xShEIy3tManeqpSLDL8dVGDg43yXIm/OycR/Va.GXmq', 2, FALSE); -- Doctor inactivo
 
 -- 3. Turnos (Appointments)
 INSERT INTO appointments (date, time, status, id_patient, id_doctor) VALUES

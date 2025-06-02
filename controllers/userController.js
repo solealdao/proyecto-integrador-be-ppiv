@@ -7,11 +7,31 @@ const SECRET_KEY = process.env.SECRET_KEY;
 //Consultar listado de usuarios
 const getAllUsers = async (req, res) => {
 	try {
-		const users = await User.findAll({ include: UserType });
+		const users = await User.findAll({ where: { is_active: true } });
+
 		res.json(users);
 	} catch (error) {
 		res.status(500).json({
 			message: 'Error al obtener usuarios',
+			error: error.message,
+		});
+	}
+};
+
+// Obtener usuario por id (detalle)
+const getUserById = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		const user = await User.findByPk(id, { include: UserType });
+
+		if (!user)
+			return res.status(404).json({ message: 'Usuario no encontrado' });
+
+		res.json(user);
+	} catch (error) {
+		res.status(500).json({
+			message: 'Error al obtener usuario',
 			error: error.message,
 		});
 	}
@@ -105,11 +125,12 @@ const deleteUser = async (req, res) => {
 		if (!user)
 			return res.status(404).json({ message: 'Usuario no encontrado' });
 
-		await user.destroy();
-		res.json({ message: 'Usuario eliminado' });
+		await user.update({ is_active: false });
+
+		res.json({ message: 'Usuario inactivado' });
 	} catch (error) {
 		res.status(500).json({
-			message: 'Error al eliminar usuario',
+			message: 'Error al inactivar usuario',
 			error: error.message,
 		});
 	}
@@ -117,6 +138,7 @@ const deleteUser = async (req, res) => {
 
 module.exports = {
 	getAllUsers,
+	getUserById,
 	register,
 	login,
 	updateUser,

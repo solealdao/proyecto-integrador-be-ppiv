@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
 			email: { type: DataTypes.CHAR(100), unique: true, allowNull: false },
 			password: { type: DataTypes.CHAR(100), allowNull: false },
 			id_user_type: { type: DataTypes.INTEGER, allowNull: false },
+			is_active: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: true,
+			},
 		},
 		{
 			tableName: 'users',
