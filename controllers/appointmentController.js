@@ -1,13 +1,68 @@
-const { Appointment, AppointmentHistory, User } = require('../models');
+const {
+	Appointment,
+	AppointmentHistory,
+	User,
+	DoctorAvailability,
+	DoctorUnavailability,
+} = require('../models');
 const { Op } = require('sequelize');
+const moment = require('moment');
+const { divideIntoSlots } = require('../utils/timeSlots');
 
 // Reservar un turno
 const createAppointment = async (req, res) => {
 	try {
 		const { date, time, id_patient, id_doctor } = req.body;
-
 		if (!date || !time || !id_patient || !id_doctor) {
 			return res.status(400).json({ message: 'Faltan campos obligatorios' });
+		}
+
+		const weekday = moment(date).format('dddd').toLowerCase();
+		const timeMoment = moment(time, 'HH:mm');
+		const timeStr = timeMoment.format('HH:mm:ss');
+
+		const availabilities = await DoctorAvailability.findAll({
+			where: {
+				id_doctor,
+				weekday,
+				start_time: { [Op.lte]: timeStr },
+				end_time: { [Op.gt]: timeStr },
+			},
+		});
+
+		if (!availabilities.length) {
+			return res
+				.status(400)
+				.json({ message: 'El médico no atiende ese día' });
+		}
+
+		let slotFound = false;
+		for (const av of availabilities) {
+			const slots = divideIntoSlots(av.start_time, av.end_time);
+			if (slots.some((slot) => slot.start_time === time)) {
+				slotFound = true;
+				break;
+			}
+		}
+
+		if (!slotFound) {
+			return res
+				.status(400)
+				.json({ message: 'El médico no atiende en ese horario' });
+		}
+
+		const isUnavailable = await DoctorUnavailability.findOne({
+			where: {
+				id_doctor,
+				exception_date: date,
+				is_available: false,
+			},
+		});
+
+		if (isUnavailable) {
+			return res
+				.status(400)
+				.json({ message: 'El médico no está disponible ese día' });
 		}
 
 		const exists = await Appointment.findOne({
@@ -35,6 +90,7 @@ const createAppointment = async (req, res) => {
 
 		res.status(201).json(appointment);
 	} catch (error) {
+		console.error('Error en createAppointment:', error);
 		res.status(500).json({ message: 'Error al crear turno', error });
 	}
 };

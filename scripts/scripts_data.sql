@@ -38,3 +38,26 @@ INSERT INTO notifications (message, type, sent_at, id_user) VALUES
 INSERT INTO surveys (rating, comment, submitted_at, id_appointment) VALUES
 (5, 'Excelente atención.', NOW(), 1),
 (3, 'Todo bien, pero hubo demoras.', NOW(), 2);
+
+
+-- Disponibilidad de Ana Gómez (Lunes a Viernes de 09:00 a 13:00)
+INSERT INTO doctor_schedules (id_doctor, weekday, start_time, end_time) VALUES
+(2, 'monday', '09:00:00', '13:00:00'),
+(2, 'tuesday', '09:00:00', '13:00:00'),
+(2, 'wednesday', '09:00:00', '13:00:00'),
+(2, 'thursday', '09:00:00', '13:00:00'),
+(2, 'friday', '09:00:00', '13:00:00');
+
+-- Disponibilidad de Carlos Sánchez (Martes y Jueves de 15:00 a 18:00)
+INSERT INTO doctor_schedules (id_doctor, weekday, start_time, end_time) VALUES
+(5, 'tuesday', '15:00:00', '18:00:00'),
+(5, 'thursday', '15:00:00', '18:00:00');
+
+-- Ana Gómez no atenderá el 2025-06-10 por congreso
+INSERT INTO doctor_exceptions (id_doctor, exception_date, reason, is_available) VALUES
+(2, '2025-06-10', 'Asistencia a congreso médico', FALSE);
+
+-- Carlos Sánchez decidió atender excepcionalmente el sábado 2025-06-15
+INSERT INTO doctor_exceptions (id_doctor, exception_date, reason, is_available) VALUES
+(5, '2025-06-15', 'Atención extraordinaria por demanda', TRUE);
+

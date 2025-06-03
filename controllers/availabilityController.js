@@ -1,5 +1,6 @@
 const { DoctorAvailability, DoctorUnavailability } = require('../models');
 const { Op } = require('sequelize');
+const { divideIntoSlots } = require('../utils/timeSlots');
 
 const getAllAvailabilities = async (req, res) => {
 	try {
@@ -21,7 +22,16 @@ const getAvailabilityByDoctor = async (req, res) => {
 			where: { id_doctor: idDoctor },
 		});
 
-		res.status(200).json(availabilities);
+		const slots = availabilities.flatMap((av) => {
+			return divideIntoSlots(av.start_time, av.end_time).map((slot) => ({
+				weekday: av.weekday,
+				id_doctor: av.id_doctor,
+				start_time: slot.start_time,
+				end_time: slot.end_time,
+			}));
+		});
+
+		res.status(200).json(slots);
 	} catch (error) {
 		res.status(500).json({
 			message: 'Error al obtener la disponibilidad del doctor',
@@ -48,9 +58,61 @@ const getDoctorAgenda = async (req, res) => {
 			},
 		});
 
+		const exceptionDates = new Set(
+			exceptions.map((e) =>
+				new Date(e.exception_date).toISOString().slice(0, 10)
+			)
+		);
+
+		const slots = [];
+
+		const current = new Date(from);
+		const end = new Date(to);
+		const weekdayMap = [
+			'sunday',
+			'monday',
+			'tuesday',
+			'wednesday',
+			'thursday',
+			'friday',
+			'saturday',
+		];
+
+		while (current <= end) {
+			const dateStr = current.toISOString().slice(0, 10);
+			const weekday = weekdayMap[current.getDay()];
+
+			if (!exceptionDates.has(dateStr)) {
+				availabilities
+					.filter((av) => av.weekday === weekday)
+					.forEach((av) => {
+						const dailySlots = divideIntoSlots(
+							av.start_time,
+							av.end_time
+						);
+						dailySlots.forEach((slot) => {
+							slots.push({
+								date: dateStr,
+								weekday,
+								id_doctor: idDoctor,
+								start_time: slot.start_time,
+								end_time: slot.end_time,
+							});
+						});
+					});
+			}
+
+			current.setDate(current.getDate() + 1);
+		}
+
 		res.status(200).json({
-			availabilities,
-			exceptions,
+			slots,
+			unavailabilities: exceptions.map((e) => ({
+				exception_date: new Date(e.exception_date)
+					.toISOString()
+					.slice(0, 10),
+				reason: e.reason || null,
+			})),
 		});
 	} catch (error) {
 		res.status(500).json({
@@ -66,11 +128,9 @@ const createAvailability = async (req, res) => {
 		const { days_of_week, start_time, end_time } = req.body;
 
 		if (!Array.isArray(days_of_week) || days_of_week.length === 0) {
-			return res
-				.status(400)
-				.json({
-					message: 'days_of_week debe ser un array con al menos un día',
-				});
+			return res.status(400).json({
+				message: 'days_of_week debe ser un array con al menos un día',
+			});
 		}
 
 		const created = [];
