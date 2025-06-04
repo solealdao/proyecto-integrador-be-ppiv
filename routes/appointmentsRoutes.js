@@ -6,6 +6,8 @@ const authenticateToken = require('../middlewares/authenticateToken');
 // Todas las rutas requieren autenticación
 router.use(authenticateToken);
 
+router.get('/all', appointmentController.getAllAppointments);
+
 // Crear un nuevo turno
 router.post('/', appointmentController.createAppointment);
 

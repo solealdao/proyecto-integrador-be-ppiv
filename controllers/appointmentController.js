@@ -9,6 +9,29 @@ const { Op } = require('sequelize');
 const moment = require('moment');
 const { divideIntoSlots } = require('../utils/timeSlots');
 
+const getAllAppointments = async (req, res) => {
+	try {
+		const appointments = await Appointment.findAll({
+			include: [
+				{
+					model: User,
+					as: 'patient',
+					attributes: ['first_name', 'last_name'],
+				},
+				{
+					model: User,
+					as: 'doctor',
+					attributes: ['first_name', 'last_name'],
+				},
+			],
+		});
+
+		res.status(200).json(appointments);
+	} catch (error) {
+		res.status(500).json({ message: 'Error al obtener los turnos', error });
+	}
+};
+
 // Reservar un turno
 const createAppointment = async (req, res) => {
 	try {
@@ -269,6 +292,7 @@ const addOrUpdateAppointmentNotes = async (req, res) => {
 };
 
 module.exports = {
+	getAllAppointments,
 	createAppointment,
 	getAppointmentsByUser,
 	cancelAppointment,
