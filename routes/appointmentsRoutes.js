@@ -23,8 +23,8 @@ router.put('/:id', appointmentController.updateAppointment);
 // Cancelar un turno
 router.delete('/:id', appointmentController.cancelAppointment);
 
-// Obtener turnos de un usuario específico (admin u otros casos)
-router.get('/user/:userId', appointmentController.getAppointmentsByUser);
+// Obtener turnos de un usuario doctor
+router.get('/doctor/:doctorId', appointmentController.getAppointmentsByDoctor);
 
 // Completar un turno con notas
 router.post('/:id/complete', appointmentController.addOrUpdateAppointmentNotes);

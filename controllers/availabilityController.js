@@ -1,4 +1,8 @@
-const { DoctorAvailability, DoctorUnavailability } = require('../models');
+const {
+	DoctorAvailability,
+	DoctorUnavailability,
+	Appointment,
+} = require('../models');
 const { Op } = require('sequelize');
 const { divideIntoSlots } = require('../utils/timeSlots');
 
@@ -57,6 +61,13 @@ const getDoctorAgenda = async (req, res) => {
 				},
 			},
 		});
+		const existingAppointments = await Appointment.findAll({
+			where: {
+				id_doctor: idDoctor,
+				date: { [Op.between]: [from, to] },
+				status: { [Op.notIn]: ['canceled'] },
+			},
+		});
 
 		const exceptionDates = new Set(
 			exceptions.map((e) =>
@@ -91,13 +102,32 @@ const getDoctorAgenda = async (req, res) => {
 							av.end_time
 						);
 						dailySlots.forEach((slot) => {
-							slots.push({
-								date: dateStr,
-								weekday,
-								id_doctor: idDoctor,
-								start_time: slot.start_time,
-								end_time: slot.end_time,
-							});
+							const slotKey = `${dateStr}T${slot.start_time}`;
+							const existingAppointment = existingAppointments.find(
+								(a) => `${a.date}T${a.time}` === slotKey
+							);
+							if (existingAppointment) {
+								slots.push({
+									date: dateStr,
+									weekday,
+									id_doctor: idDoctor,
+									start_time: slot.start_time,
+									end_time: slot.end_time,
+									status: 'booked',
+									patient_name:
+										existingAppointment.patient_name || null,
+									appointment_id: existingAppointment.id,
+								});
+							} else {
+								slots.push({
+									date: dateStr,
+									weekday,
+									id_doctor: idDoctor,
+									start_time: slot.start_time,
+									end_time: slot.end_time,
+									status: 'available',
+								});
+							}
 						});
 					});
 			}

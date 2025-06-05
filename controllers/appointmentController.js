@@ -118,14 +118,14 @@ const createAppointment = async (req, res) => {
 	}
 };
 
-// Obtener los turnos de un usuario (paciente o doctor)
-const getAppointmentsByUser = async (req, res) => {
+// Obtener los turnos de un usuario doctor
+const getAppointmentsByDoctor = async (req, res) => {
 	try {
-		const { userId } = req.params;
+		const { doctorId } = req.params;
 
 		const appointments = await Appointment.findAll({
 			where: {
-				[Op.or]: [{ id_patient: userId }, { id_doctor: userId }],
+				id_doctor: doctorId,
 			},
 			include: [
 				{
@@ -144,7 +144,7 @@ const getAppointmentsByUser = async (req, res) => {
 		res.status(200).json(appointments);
 	} catch (error) {
 		res.status(500).json({
-			message: 'Error al obtener turnos del usuario',
+			message: 'Error al obtener turnos del doctor',
 			error,
 		});
 	}
@@ -325,7 +325,7 @@ const addOrUpdateAppointmentNotes = async (req, res) => {
 module.exports = {
 	getAllAppointments,
 	createAppointment,
-	getAppointmentsByUser,
+	getAppointmentsByDoctor,
 	getAppointmentById,
 	cancelAppointment,
 	updateAppointment,
