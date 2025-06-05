@@ -11,14 +11,17 @@ router.get('/all', appointmentController.getAllAppointments);
 // Crear un nuevo turno
 router.post('/', appointmentController.createAppointment);
 
+// Obtener los turnos del usuario logueado
+router.get('/me', appointmentController.getMyAppointments);
+
+// Ver detalle del turno
+router.get('/:id', appointmentController.getAppointmentById);
+
 // Modificar un turno
 router.put('/:id', appointmentController.updateAppointment);
 
 // Cancelar un turno
 router.delete('/:id', appointmentController.cancelAppointment);
-
-// Obtener los turnos del usuario logueado
-router.get('/me', appointmentController.getMyAppointments);
 
 // Obtener turnos de un usuario específico (admin u otros casos)
 router.get('/user/:userId', appointmentController.getAppointmentsByUser);

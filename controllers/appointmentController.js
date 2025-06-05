@@ -150,6 +150,37 @@ const getAppointmentsByUser = async (req, res) => {
 	}
 };
 
+//Obtener los turnos por ID
+const getAppointmentById = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		const appointment = await Appointment.findOne({
+			where: { id_appointment: id },
+			include: [
+				{
+					model: User,
+					as: 'patient',
+					attributes: ['first_name', 'last_name'],
+				},
+				{
+					model: User,
+					as: 'doctor',
+					attributes: ['first_name', 'last_name'],
+				},
+			],
+		});
+
+		if (!appointment) {
+			return res.status(404).json({ message: 'Turno no encontrado' });
+		}
+
+		res.status(200).json(appointment);
+	} catch (error) {
+		res.status(500).json({ message: 'Error al obtener el turno', error });
+	}
+};
+
 // Cancelar un turno
 const cancelAppointment = async (req, res) => {
 	try {
@@ -295,6 +326,7 @@ module.exports = {
 	getAllAppointments,
 	createAppointment,
 	getAppointmentsByUser,
+	getAppointmentById,
 	cancelAppointment,
 	updateAppointment,
 	getMyAppointments,
