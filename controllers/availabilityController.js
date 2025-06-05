@@ -305,6 +305,7 @@ const addUnavailability = async (req, res) => {
 
 		res.status(201).json(unavailability);
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			message: 'Error al agregar indisponibilidad',
 			error,
