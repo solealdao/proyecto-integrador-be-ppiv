@@ -1,5 +1,6 @@
 const { Message, User } = require('../models');
 const { Op } = require('sequelize');
+const sendMail = require('../utils/sendMail');
 
 const getAvailableUsers = async (req, res) => {
 	try {
@@ -76,6 +77,20 @@ const sendMessage = async (req, res) => {
 			id_sender,
 			id_receiver,
 		});
+
+		const receiver = await User.findByPk(id_receiver);
+		const sender = await User.findByPk(id_sender);
+
+		if (receiver && receiver.email) {
+			await sendMail({
+				to: receiver.email,
+				subject: `Nuevo mensaje de ${sender.first_name}`,
+				html: `<p>Hola ${receiver.first_name},</p>
+         				<p>Tenés un nuevo mensaje en la plataforma:</p>
+         				<blockquote>${content}</blockquote>
+        				 <p>Iniciá sesión para responder.</p>`,
+			});
+		}
 
 		res.status(201).json(newMessage);
 	} catch (error) {
