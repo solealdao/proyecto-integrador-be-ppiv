@@ -5,10 +5,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config();
 
+require('./jobs/cronJobs');
+
 var indexRouter = require('./routes/index');
 var userRoutes = require('./routes/userRoutes');
 var appointmentRoutes = require('./routes/appointmentsRoutes');
 var availabilityRoutes = require('./routes/availabilityRoutes');
+var messageRoutes = require('./routes/messageRoutes');
 
 var app = express();
 
@@ -28,5 +31,6 @@ app.use('/', indexRouter);
 app.use('/api/users', userRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/availability', availabilityRoutes);
+app.use('/api/messages', messageRoutes);
 
 module.exports = app;
