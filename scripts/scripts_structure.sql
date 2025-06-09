@@ -1,92 +1,50 @@
-CREATE DATABASE clinic_system;
-USE clinic_system;
+const request = require('supertest');
+const app = require('../app');
+const db = require('../models');
 
--- Crear tabla de tipos de usuario
-CREATE TABLE user_types (
-  id_user_type INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(50) NOT NULL UNIQUE
-);
+// Evita la validación del token en los tests
+jest.mock('../middlewares/authenticateToken', () => (req, res, next) => next());
 
--- Crear tabla de usuarios
-CREATE TABLE users (
-  id_user INT AUTO_INCREMENT PRIMARY KEY,
-  first_name CHAR(50) NOT NULL,
-  last_name CHAR(50) NOT NULL,
-  email CHAR(100) NOT NULL UNIQUE,
-  password CHAR(100) NOT NULL,
-  id_user_type INT NOT NULL,
-  is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  FOREIGN KEY (id_user_type) REFERENCES user_types(id_user_type)
-);
+beforeAll(async () => {
+  await db.sequelize.sync({ force: true });
 
--- Crear tabla de turnos
-CREATE TABLE appointments (
-  id_appointment INT AUTO_INCREMENT PRIMARY KEY,
-  date DATE NOT NULL,
-  time TIME NOT NULL,
-  status ENUM('pending', 'confirmed', 'canceled', 'completed') NOT NULL,
-  id_patient INT NOT NULL,
-  id_doctor INT NOT NULL,
-  FOREIGN KEY (id_patient) REFERENCES users(id_user),
-  FOREIGN KEY (id_doctor) REFERENCES users(id_user)
-);
+  // Crear datos de prueba
+  const patient = await db.User.create({
+    first_name: 'Paciente',
+    last_name: 'Test',
+    email: 'paciente@test.com',
+    password: 'hashedpassword',
+    id_user_type: 1, // asumimos que ya existe el tipo paciente
+  });
 
--- Crear tabla de historial de turnos
-CREATE TABLE appointment_history (
-  id_history INT AUTO_INCREMENT PRIMARY KEY,
-  notes TEXT,
-  id_appointment INT NOT NULL,
-  FOREIGN KEY (id_appointment) REFERENCES appointments(id_appointment)
-);
+  const doctor = await db.User.create({
+    first_name: 'Doctor',
+    last_name: 'Test',
+    email: 'doctor@test.com',
+    password: 'hashedpassword',
+    id_user_type: 2, // asumimos que ya existe el tipo doctor
+  });
 
--- Crear tabla de mensajes
-CREATE TABLE messages (
-  id_message INT AUTO_INCREMENT PRIMARY KEY,
-  content TEXT NOT NULL,
-  sent_at DATETIME NOT NULL,
-  id_sender INT NOT NULL,
-  id_receiver INT NOT NULL,
-  FOREIGN KEY (id_sender) REFERENCES users(id_user),
-  FOREIGN KEY (id_receiver) REFERENCES users(id_user)
-);
+  global.testData = { patientId: patient.id_user, doctorId: doctor.id_user };
+});
 
--- Crear tabla de notificaciones
-CREATE TABLE notifications (
-  id_notification INT AUTO_INCREMENT PRIMARY KEY,
-  message TEXT NOT NULL,
-  type ENUM('reminder', 'message', 'other') NOT NULL,
-  sent_at DATETIME NOT NULL,
-  id_user INT NOT NULL,
-  FOREIGN KEY (id_user) REFERENCES users(id_user)
-);
+afterAll(async () => {
+  await db.sequelize.close();
+});
 
--- Crear tabla de encuestas de satisfacción
-CREATE TABLE surveys (
-  id_survey INT AUTO_INCREMENT PRIMARY KEY,
-  rating INT CHECK (rating BETWEEN 1 AND 5),
-  comment TEXT,
-  submitted_at DATETIME NOT NULL,
-  id_appointment INT NOT NULL,
-  FOREIGN KEY (id_appointment) REFERENCES appointments(id_appointment)
-);
+describe('Test de rutas /appointments', () => {
+  test('POST /appointments - crear turno', async () => {
+    const res = await request(app)
+      .post('/appointments')
+      .send({
+        date: '2025-06-15',
+        time: '10:00',
+        status: 'pending',
+        id_patient: global.testData.patientId,
+        id_doctor: global.testData.doctorId,
+      });
 
--- Crear tabla de días de trabajo de los médicos
-CREATE TABLE doctor_schedules (
-  id_schedule INT AUTO_INCREMENT PRIMARY KEY,
-  id_doctor INT NOT NULL,
-  weekday ENUM('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday') NOT NULL,
-  start_time TIME NOT NULL,
-  end_time TIME NOT NULL,
-  FOREIGN KEY (id_doctor) REFERENCES users(id_user)
-);
-
--- Crear tabla de excepciones de día de trabajo de los médicos
-CREATE TABLE doctor_exceptions (
-  id_exception INT AUTO_INCREMENT PRIMARY KEY,
-  id_doctor INT NOT NULL,
-  exception_date DATE NOT NULL,
-  reason VARCHAR(255),
-  is_available BOOLEAN DEFAULT FALSE,
-  FOREIGN KEY (id_doctor) REFERENCES users(id_user)
-);
-
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toHaveProperty('id_appointment');
+  });
+});
