@@ -86,8 +86,9 @@ const login = async (req, res) => {
 
 		res.json({ message: 'Login exitoso', token, user });
 	} catch (error) {
-		res.status(500).json({ message: 'Error en login', error: error.message });
-	}
+  		console.error('Error en login:', error);  // Mostrar error en consola
+  		res.status(500).json({ message: 'Error en login', error: error.message });
+}
 };
 
 // Editar usuario

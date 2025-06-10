@@ -1,4 +1,4 @@
-CREATE DATABASE clinic_system;
+CREATE DATABASE IF NOT EXISTS clinic_system;
 USE clinic_system;
 
 -- Crear tabla de tipos de usuario

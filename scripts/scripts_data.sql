@@ -1,3 +1,4 @@
+USE clinic_system;
 -- 1. Tipos de usuario
 INSERT INTO user_types (name) VALUES
 ('Paciente'),
