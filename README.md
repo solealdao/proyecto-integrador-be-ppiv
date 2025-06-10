@@ -54,6 +54,28 @@ Este proyecto es parte del trabajo integrador final de la materia **Prácticas P
 
 ## ⚙️ Instalación y ejecución
 
+### Variables de entorno (.env)
+
+El archivo `.env` contiene las variables necesarias para la configuración de la conexión a la base de datos y otros secretos.
+
+#### Importante sobre `DB_HOST`:
+
+-  Si ejecutás el proyecto localmente, donde MySQL está instalado en tu máquina, configurá:
+
+```bash
+DB_HOST=127.0.0.1
+```
+
+-  Si ejecutás el proyecto con Docker Compose, el contenedor de la API debe conectarse al contenedor MySQL usando el nombre del servicio definido en `docker-compose.yml` (usualmente db):
+
+```bash
+DB_HOST=db
+```
+
+Esto es porque en Docker Compose los contenedores se comunican por nombre de servicio dentro de la red interna de Docker.
+
+### Opción 1: Ejecutar localmente (Node.js + MySQL instalado localmente)
+
 1. **Clonar el repositorio**
 
 ```bash
@@ -74,7 +96,10 @@ npm install
    DB_PASS=password
    DB_NAME=clinic_system
    DB_HOST=127.0.0.1
+   DB_PORT=3306
    SECRET_KEY=superclaveultrasecreta
+   EMAIL_USER=clinica.medica.ppiv@gmail.com
+   EMAIL_PASS=klfmhhefpmvimgki
 
 4. **Configuración de la conexión a la base de datos**
    Los datos de conexión a la base de datos están definidos en el archivo:
@@ -121,6 +146,39 @@ npm start
 
 El servidor estará disponible en http://localhost:4001
 
+### Opción 2: Ejecutar con Docker Compose (recomendado)
+
+Si preferís usar Docker, podés levantar la API y la base de datos MySQL con un solo comando.
+
+1. Asegurate de tener instalado Docker y Docker Compose.
+2. Clonar el repositorio y entrar en la carpeta del proyecto:
+
+```bash
+git clone git@github.com:solealdao/proyecto-integrador-be-ppiv.git
+cd proyecto-integrador-be-ppiv
+```
+
+3. Crear un archivo `.env` en la raíz del proyecto con el siguiente contenido (ejemplo para Docker Compose):
+
+DB_USER=root
+DB_PASS=password
+DB_NAME=clinic_system
+DB_HOST=db
+DB_PORT=3306
+SECRET_KEY=superclaveultrasecreta
+EMAIL_USER=clinica.medica.ppiv@gmail.com
+EMAIL_PASS=klfmhhefpmvimgki
+
+4. Levantar los servicios con Docker Compose:
+
+```bash
+docker compose up
+```
+
+Esto levantará un contenedor para la API y otro con MySQL configurado automáticamente con los datos definidos.
+
+5. La API estará disponible en http://localhost:4001
+
 ---
 
 ## Endpoints disponibles
@@ -137,14 +195,16 @@ El servidor estará disponible en http://localhost:4001
 
 📅 Turnos
 
-| Método | Ruta                             | Descripción                                 |
-| ------ | -------------------------------- | ------------------------------------------- |
-| POST   | `/api/appointments`              | Crear un nuevo turno                        |
-| PUT    | `/api/appointments/:id`          | Modificar un turno existente                |
-| DELETE | `/api/appointments/:id`          | Cancelar un turno                           |
-| GET    | `/api/appointments/me`           | Obtener los turnos del usuario logueado     |
-| GET    | `/api/appointments/user/:userId` | Obtener los turnos de un usuario específico |
-| POST   | `/api/appointments/:id/complete` | Completar un turno con notas                |
+| Método | Ruta                                 | Descripción                            |
+| ------ | ------------------------------------ | -------------------------------------- |
+| GET    | `/api/appointments/all`              | Obtener todos los turnos               |
+| POST   | `/api/appointments`                  | Crear un nuevo turno                   |
+| GET    | `/api/appointments/me`               | Obtener turnos del usuario logueado    |
+| GET    | `/api/appointments/:id`              | Obtener detalle de un turno por ID     |
+| PUT    | `/api/appointments/:id`              | Modificar un turno existente           |
+| DELETE | `/api/appointments/:id`              | Cancelar un turno                      |
+| GET    | `/api/appointments/doctor/:doctorId` | Obtener turnos de un doctor específico |
+| POST   | `/api/appointments/:id/complete`     | Completar un turno con notas           |
 
 📆 Disponibilidades
 
@@ -158,3 +218,11 @@ El servidor estará disponible en http://localhost:4001
 | DELETE | `/api/availabilities/:id`                     | Eliminar una disponibilidad                             |
 | POST   | `/api/availabilities/unavailable`             | Crear una indisponibilidad (día no disponible)          |
 | DELETE | `/api/availabilities/unavailable/:id`         | Eliminar una indisponibilidad                           |
+
+💬 Mensajes
+
+| Método | Ruta                                 | Descripción                                 |
+| ------ | ------------------------------------ | ------------------------------------------- |
+| GET    | `/api/messages/users`                | Obtener usuarios disponibles para chat      |
+| GET    | `/api/messages/conversation/:userId` | Obtener conversación con usuario específico |
+| POST   | `/api/messages/send`                 | Enviar un nuevo mensaje                     |

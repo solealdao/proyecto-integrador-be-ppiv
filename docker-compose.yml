@@ -1,26 +1,29 @@
 services:
-  backend:
-    build: .
-    ports:
-      - "4001:3000"
-    env_file:
-      - .env
-    depends_on:
-      - db
-    volumes:
-      - .:/app
-    command: npm start
+   backend:
+      build: .
+      ports:
+         - '4001:4001'
+      env_file:
+         - .env
+      depends_on:
+         - db
+      volumes:
+         - .:/app
+      command: npm start
 
-  db:
-    image: mysql:8
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
-      - ./scripts:/docker-entrypoint-initdb.d
+   db:
+      image: mysql:8
+      restart: always
+      env_file:
+         - .env
+      ports:
+         - '3307:3306'
+      volumes:
+         - mysql-data:/var/lib/mysql
+         - ./scripts:/docker-entrypoint-initdb.d
+      environment:
+         - MYSQL_ROOT_PASSWORD=${DB_PASS}
+         - MYSQL_DATABASE=${DB_NAME}
 
 volumes:
-  mysql-data:
+   mysql-data:
