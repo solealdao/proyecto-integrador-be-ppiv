@@ -30,7 +30,7 @@ describe('userRoutes', () => {
     app.use('/users', userRoutes);
   });
 
-  it('should route POST /users/register to userController.register', async () => {
+  test('should route POST /users/register to userController.register', async () => {
     const res = await request(app).post('/users/register').send({ email: 'test@example.com', password: '1234' });
 
     expect(res.statusCode).toBe(201);
@@ -38,5 +38,4 @@ describe('userRoutes', () => {
     expect(userController.register).toHaveBeenCalled();
   });
 
-  //... el resto de tests igual
 });

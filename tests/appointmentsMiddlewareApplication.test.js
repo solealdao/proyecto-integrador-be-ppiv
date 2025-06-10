@@ -5,7 +5,7 @@ describe('appointmentsRoutes - middleware', () => {
       jest.clearAllMocks();
     });
   
-    it('should apply authentication middleware to all routes', () => {
+    test('should apply authentication middleware to all routes', () => {
       const mockUse = jest.fn();
       //objeto para simular el router de Express.
       const mockRouter = {
