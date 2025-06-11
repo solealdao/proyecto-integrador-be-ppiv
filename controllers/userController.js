@@ -71,6 +71,7 @@ const login = async (req, res) => {
 		const { email, password } = req.body;
 
 		const user = await User.findOne({ where: { email }, include: UserType });
+
 		if (!user)
 			return res.status(404).json({ message: 'Usuario no encontrado' });
 
@@ -86,9 +87,9 @@ const login = async (req, res) => {
 
 		res.json({ message: 'Login exitoso', token, user });
 	} catch (error) {
-  		console.error('Error en login:', error);  // Mostrar error en consola
-  		res.status(500).json({ message: 'Error en login', error: error.message });
-}
+		console.error('Error en login:', error); // Mostrar error en consola
+		res.status(500).json({ message: 'Error en login', error: error.message });
+	}
 };
 
 // Editar usuario

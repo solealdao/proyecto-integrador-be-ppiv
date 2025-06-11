@@ -12,6 +12,7 @@ var userRoutes = require('./routes/userRoutes');
 var appointmentRoutes = require('./routes/appointmentsRoutes');
 var availabilityRoutes = require('./routes/availabilityRoutes');
 var messageRoutes = require('./routes/messageRoutes');
+var surveyRoutes = require('./routes/surveyRoutes');
 
 var app = express();
 
@@ -32,5 +33,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/availability', availabilityRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/surveys', surveyRoutes);
 
 module.exports = app;
