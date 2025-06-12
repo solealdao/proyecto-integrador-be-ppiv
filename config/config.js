@@ -8,6 +8,13 @@ module.exports = {
 		host: process.env.DB_HOST,
 		port: process.env.DB_PORT,
 		dialect: 'mysql',
+		dialectOptions: {
+			charset: 'utf8mb4',
+		},
+		define: {
+			charset: 'utf8mb4',
+			collate: 'utf8mb4_unicode_ci',
+		},
 	},
 	test: {
 		username: process.env.DB_USER,
@@ -16,6 +23,13 @@ module.exports = {
 		host: process.env.DB_HOST,
 		port: process.env.DB_PORT,
 		dialect: 'mysql',
+		dialectOptions: {
+			charset: 'utf8mb4',
+		},
+		define: {
+			charset: 'utf8mb4',
+			collate: 'utf8mb4_unicode_ci',
+		},
 	},
 	production: {
 		username: process.env.DB_USER,
@@ -24,5 +38,12 @@ module.exports = {
 		host: process.env.DB_HOST,
 		port: process.env.DB_PORT,
 		dialect: 'mysql',
+		dialectOptions: {
+			charset: 'utf8mb4',
+		},
+		define: {
+			charset: 'utf8mb4',
+			collate: 'utf8mb4_unicode_ci',
+		},
 	},
 };
