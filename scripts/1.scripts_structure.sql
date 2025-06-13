@@ -50,16 +50,6 @@ CREATE TABLE messages (
   FOREIGN KEY (id_receiver) REFERENCES users(id_user)
 );
 
--- Crear tabla de notificaciones
-CREATE TABLE notifications (
-  id_notification INT AUTO_INCREMENT PRIMARY KEY,
-  message TEXT NOT NULL,
-  type ENUM('reminder', 'message', 'other') NOT NULL,
-  sent_at DATETIME NOT NULL,
-  id_user INT NOT NULL,
-  FOREIGN KEY (id_user) REFERENCES users(id_user)
-);
-
 -- Crear tabla de encuestas de satisfacción
 CREATE TABLE surveys (
   id_survey INT AUTO_INCREMENT PRIMARY KEY,
