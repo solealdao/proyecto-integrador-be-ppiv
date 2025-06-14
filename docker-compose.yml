@@ -10,6 +10,15 @@ services:
       volumes:
          - .:/app
       command: npm start
+   backend-tests:
+      build: .
+      depends_on:
+         - db
+      env_file:
+         - .env
+      volumes:
+         - .:/app
+      command: npm test
 
    db:
       image: mysql:8
