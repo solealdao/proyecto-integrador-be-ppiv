@@ -9,6 +9,7 @@ services:
          - db
       volumes:
          - .:/app
+         - ./logs:/app/logs
       command: npm start
    backend-tests:
       build: .

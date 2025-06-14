@@ -2,8 +2,12 @@ var express = require('express');
 const cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var morgan = require('morgan');
+const fs = require('fs');
 var logger = require('morgan');
 require('dotenv').config();
+
+const customLogger = require('./utils/logger');
 
 require('./jobs/cronJobs');
 
@@ -16,6 +20,14 @@ var surveyRoutes = require('./routes/surveyRoutes');
 
 var app = express();
 
+// Logging de HTTP con morgan a consola y archivo
+const logStream = fs.createWriteStream(
+	path.join(__dirname, 'logs/access.log'),
+	{ flags: 'a' }
+);
+app.use(morgan('dev'));
+app.use(morgan('combined', { stream: logStream }));
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -27,6 +39,9 @@ app.use(
 		credentials: true,
 	})
 );
+
+// Loguear arranque del backend
+customLogger.info('Aplicación Express inicializada');
 
 app.use('/', indexRouter);
 app.use('/api/users', userRoutes);
