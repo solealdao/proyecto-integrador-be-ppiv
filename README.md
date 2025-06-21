@@ -37,18 +37,29 @@ Este proyecto es parte del trabajo integrador final de la materia **Prácticas P
 
 ## 📁 Estructura del Proyecto
 
+```bash
 /proyecto-integrador-be-ppiv
 │
+├── .github/workflows # Configuración de GitHub Actions para CI/CD
+├── config # Configuración de conexión a la base de datos
 ├── controllers/ # Lógica de negocio (register, login, ABM de usuarios, etc.)
+├── jobs/ # Cron jobs programados (envío de recordatorios diarios, aviso de mensajes sin leer)
+├── logs/ # Archivos de logs del sistema
 ├── routes/ # Rutas organizadas por entidad
 ├── models/ # Definición de modelos Sequelize
 ├── middlewares/ # Middlewares como autenticación, validaciones, manejo de errores
 ├── scripts/ # Scripts SQL para crear la base de datos y datos de prueba
+├── tests/ # Archivos correspondientes a pruebas unitarias y de integración
+├── utils/ # Funciones auxiliares de uso general
 ├── .env # Variables de entorno
-├── database.js # Configuración de conexión a la base de datos
-├── index.js # Punto de entrada de la aplicación
+├── app.js # Punto de entrada de la aplicación
+├── docker-compose.yml # Configuración de servicios (API + MySQL)
+├── Dockerfile # Imagen Docker del backend
 ├── testDb.js # Script para probar conexión a la base de datos
 └── README.md # Documentación del proyecto
+```
+
+> 🕒 Nota: El cron job ubicado en jobs/ se ejecuta automáticamente todos los días a las 09:00 AM. Su función es enviar recordatorios por correo electrónico a los pacientes con turnos programados para el día siguiente.
 
 ---
 
