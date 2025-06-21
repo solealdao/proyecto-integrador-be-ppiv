@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
 			time: { type: DataTypes.TIME, allowNull: false },
 			status: {
 				type: DataTypes.ENUM(
-					'pending',
-					'confirmed',
-					'canceled',
-					'completed'
+					'pendiente',
+					'confirmado',
+					'cancelado',
+					'completo'
 				),
 				allowNull: false,
 			},
