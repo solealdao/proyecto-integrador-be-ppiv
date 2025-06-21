@@ -24,7 +24,7 @@ CREATE TABLE appointments (
   id_appointment INT AUTO_INCREMENT PRIMARY KEY,
   date DATE NOT NULL,
   time TIME NOT NULL,
-  status ENUM('pending', 'confirmed', 'canceled', 'completed') NOT NULL,
+  status ENUM('pendiente', 'confirmado', 'cancelado', 'completo') NOT NULL,
   id_patient INT NOT NULL,
   id_doctor INT NOT NULL,
   FOREIGN KEY (id_patient) REFERENCES users(id_user),

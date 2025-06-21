@@ -12,7 +12,7 @@ const sendAppointmentReminders = async () => {
 
 		const upcomingAppointments = await Appointment.findAll({
 			where: {
-				status: 'confirmed',
+				status: 'confirmado',
 				date: {
 					[Op.gte]: now.format('YYYY-MM-DD'),
 					[Op.lte]: nextDay.format('YYYY-MM-DD'),

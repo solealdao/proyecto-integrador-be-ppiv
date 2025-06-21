@@ -32,8 +32,8 @@ INSERT INTO users (first_name, last_name, email, password, id_user_type, is_acti
 
 -- 3. Turnos (Appointments)
 INSERT INTO appointments (date, time, status, id_patient, id_doctor) VALUES
-('2025-05-18', '10:00:00', 'confirmed', 14, 2),
-('2025-05-19', '15:30:00', 'pending', 15, 5);
+('2025-05-18', '10:00:00', 'confirmado', 14, 2),
+('2025-05-19', '15:30:00', 'pendiente', 15, 5);
 
 -- 4. Historial de turnos
 INSERT INTO appointment_history (notes, id_appointment) VALUES

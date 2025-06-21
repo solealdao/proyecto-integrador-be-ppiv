@@ -93,7 +93,7 @@ const createAppointment = async (req, res) => {
 				id_doctor,
 				date,
 				time,
-				status: { [Op.notIn]: ['canceled'] },
+				status: { [Op.notIn]: ['cancelado'] },
 			},
 		});
 
@@ -108,7 +108,7 @@ const createAppointment = async (req, res) => {
 			time,
 			id_patient,
 			id_doctor,
-			status: 'confirmed',
+			status: 'confirmado',
 		});
 
 		res.status(201).json(appointment);
@@ -191,7 +191,7 @@ const cancelAppointment = async (req, res) => {
 			return res.status(404).json({ message: 'Turno no encontrado' });
 		}
 
-		appointment.status = 'canceled';
+		appointment.status = 'cancelado';
 		await appointment.save();
 
 		res.status(200).json({ message: 'Turno cancelado con éxito' });
@@ -220,7 +220,7 @@ const updateAppointment = async (req, res) => {
 					id_doctor,
 					date,
 					time,
-					status: { [Op.notIn]: ['canceled'] },
+					status: { [Op.notIn]: ['cancelado'] },
 					id_appointment: { [Op.ne]: id },
 				},
 			});
@@ -294,8 +294,8 @@ const addOrUpdateAppointmentNotes = async (req, res) => {
 				.json({ message: 'No autorizado para modificar este turno' });
 		}
 
-		if (appointment.status !== 'completed') {
-			appointment.status = 'completed';
+		if (appointment.status !== 'completo') {
+			appointment.status = 'completo';
 			await appointment.save();
 		}
 

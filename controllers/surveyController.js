@@ -13,7 +13,7 @@ const createSurvey = async (req, res) => {
 			return res.status(404).json({ message: 'Turno no encontrado' });
 		}
 
-		if (appointment.status !== 'completed') {
+		if (appointment.status !== 'completo') {
 			return res
 				.status(400)
 				.json({ message: 'No se puede calificar un turno no finalizado' });

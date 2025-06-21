@@ -65,7 +65,7 @@ const getDoctorAgenda = async (req, res) => {
 			where: {
 				id_doctor: idDoctor,
 				date: { [Op.between]: [from, to] },
-				status: { [Op.notIn]: ['canceled'] },
+				status: { [Op.notIn]: ['cancelado'] },
 			},
 		});
 
