@@ -25,6 +25,11 @@ const logStream = fs.createWriteStream(
 	path.join(__dirname, 'logs/access.log'),
 	{ flags: 'a' }
 );
+
+const allowedOrigins = [
+	'http://localhost:3000',
+	'https://proyecto-integrador-ppiv.vercel.app',
+];
 app.use(morgan('dev'));
 app.use(morgan('combined', { stream: logStream }));
 
@@ -35,7 +40,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
 	cors({
-		origin: 'http://localhost:3000',
+		origin: function (origin, callback) {
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				callback(new Error('Not allowed by CORS'));
+			}
+		},
 		credentials: true,
 	})
 );
