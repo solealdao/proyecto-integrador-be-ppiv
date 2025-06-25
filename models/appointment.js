@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
 			time: { type: DataTypes.TIME, allowNull: false },
 			status: {
 				type: DataTypes.ENUM(
-					'pendiente',
 					'confirmado',
 					'cancelado',
-					'completo'
+					'completo',
+					'calificado'
 				),
 				allowNull: false,
 			},
@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 		});
 		Appointment.hasMany(models.AppointmentHistory, {
 			foreignKey: 'id_appointment',
+			as: 'history',
 		});
 		Appointment.hasMany(models.Survey, { foreignKey: 'id_appointment' });
 	};

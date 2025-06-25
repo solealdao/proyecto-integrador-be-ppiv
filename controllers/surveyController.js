@@ -41,6 +41,8 @@ const createSurvey = async (req, res) => {
 			id_appointment,
 		});
 
+		await appointment.update({ status: 'calificado' });
+
 		res.status(201).json({
 			message: 'Encuesta enviada con éxito',
 			survey: newSurvey,

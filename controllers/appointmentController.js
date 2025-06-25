@@ -168,6 +168,7 @@ const getAppointmentById = async (req, res) => {
 					as: 'doctor',
 					attributes: ['first_name', 'last_name'],
 				},
+				{ model: AppointmentHistory, as: 'history' },
 			],
 		});
 
