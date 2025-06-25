@@ -94,7 +94,7 @@ INSERT INTO doctor_schedules (id_doctor, weekday, start_time, end_time) VALUES
 (9, 'tuesday', '09:00:00', '13:00:00'),
 (10, 'thursday', '11:00:00', '15:00:00');
 
---8 No disponibilidad de médicos
+-- 8 No disponibilidad de médicos
 INSERT INTO doctor_exceptions (id_doctor, exception_date, reason, is_available) VALUES
 (2, '2025-06-20', 'Jornada académica', FALSE),
 (4, '2025-06-28', 'Licencia médica', FALSE),
