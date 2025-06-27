@@ -16,6 +16,8 @@ Este proyecto es parte del trabajo integrador final de la materia **Prácticas P
 
 ## 📌 Objetivos del Proyecto
 
+Prueba en vivo
+
 -  Permitir el **registro y login de usuarios** (pacientes, médicos y administradores).
 -  Gestionar turnos médicos y su historial.
 -  Enviar mensajes y notificaciones entre usuarios.
